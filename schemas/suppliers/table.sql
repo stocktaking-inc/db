@@ -1,0 +1,12 @@
+CREATE TABLE suppliers (
+  contact_person VARCHAR(100),
+  phone VARCHAR(20) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  address VARCHAR(100),
+  inn VARCHAR(20),
+  supplier_id SERIAL PRIMARY KEY,
+  notes VARCHAR(100),
+  name VARCHAR(100) NOT NULL
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
