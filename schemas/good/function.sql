@@ -1,0 +1,13 @@
+CREATE OR REPLACE FUNCTION add_to_inventory()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO inventory_items (item_id, good_id, warehouse_id, shelf, quantity, status, last_updated)
+    VALUES (NEW.item_id, NEW.id, NEW.warehouse_id, 'A1', NEW.quantity, 'available', CURRENT_TIMESTAMP);
+
+    -- Добавление записи в stock_transactions
+    INSERT INTO stock_transactions (item_id, quantity, transaction_type, warehouse_id, transaction_date)
+    VALUES (NEW.item_id, NEW.quantity, 'receipt', NEW.warehouse_id, CURRENT_TIMESTAMP);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;

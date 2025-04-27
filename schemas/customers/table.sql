@@ -1,11 +1,7 @@
 CREATE TABLE customers (
-  name VARCHAR(100) NOT NULL,
-  discount NUMERIC(5,2) DEFAULT 0 CHECK (discount >= 0 AND discount <= 100),
-  customer_id SERIAL PRIMARY KEY,
-  address VARCHAR(100),
-  notes VARCHAR(100),
-  email VARCHAR(100),
-  phone VARCHAR(20) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    status entity_status DEFAULT 'active'
 );

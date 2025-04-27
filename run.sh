@@ -6,11 +6,12 @@ SCHEMA_DIR="schemas"
 
 SOURCES=(
     "enum.sql:ENUM ТИПЫ"
-    "table.sql:ОСНОВНЫЕ ТАБЛИЦЫ:exclude:stock|sales|transfers|transfer_items|inventory|inventory_items"
-    "table.sql:ТАБЛИЦЫ С ЗАВИСИМОСТЯМИ:include:stock|sales|transfers|transfer_items|inventory|inventory_items"
-    "seed.sql:НАЧАЛЬНЫЕ ДАННЫЕ"
+    "table.sql:ОСНОВНЫЕ ТАБЛИЦЫ:exclude:good|inventory_items|items|order_items|orders|stock_transactions"
+    "table.sql:ТАБЛИЦЫ С ЗАВИСИМОСТЯМИ:include:good|inventory_items|items|order_items|orders|stock_transactions"
     "function.sql:ФУНКЦИИ"
     "trigger.sql:ТРИГГЕРЫ"
+    "index.sql:ИНДЕКСЫ"
+    "seed.sql:НАЧАЛЬНЫЕ ДАННЫЕ"
 )
 
 # Проверка входных данных
