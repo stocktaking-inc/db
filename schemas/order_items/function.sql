@@ -1,4 +1,5 @@
-CREATE OR REPLACE FUNCTION update_inventory_on_order()
+CREATE
+  OR REPLACE FUNCTION update_inventory_on_order()
   RETURNS TRIGGER AS
 $$
 DECLARE
@@ -17,8 +18,9 @@ BEGIN
                                     LIMIT 1))
   LIMIT 1;
 
-  -- Если товара недостаточно, выбросить исключение
-  IF current_quantity < NEW.quantity THEN
+-- Если товара недостаточно, выбросить исключение
+  IF
+    current_quantity < NEW.quantity THEN
     RAISE EXCEPTION 'Not enough items in inventory for item_id %, required: %, available: %',
       NEW.item_id, NEW.quantity, current_quantity;
   END IF;
@@ -35,7 +37,7 @@ BEGIN
                                     WHERE item_id = NEW.item_id
                                     LIMIT 1));
 
-  -- Добавление записи в stock_transactions
+-- Добавление записи в stock_transactions
   INSERT INTO stock_transactions (item_id, quantity, transaction_type, warehouse_id, transaction_date)
   VALUES (NEW.item_id, NEW.quantity, 'shipment', (SELECT warehouse_id
                                                   FROM good
@@ -46,4 +48,5 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$
+  LANGUAGE plpgsql;

@@ -1,4 +1,5 @@
-CREATE OR REPLACE FUNCTION update_order_sum()
+CREATE
+  OR REPLACE FUNCTION update_order_sum()
   RETURNS TRIGGER AS
 $$
 BEGIN
@@ -11,4 +12,5 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$
+  LANGUAGE plpgsql;

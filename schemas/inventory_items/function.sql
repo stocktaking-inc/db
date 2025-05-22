@@ -1,5 +1,6 @@
 -- Функция для проверки низкого уровня запасов и отправки уведомлений
-CREATE OR REPLACE FUNCTION check_low_inventory()
+CREATE
+  OR REPLACE FUNCTION check_low_inventory()
   RETURNS VOID AS
 $$
 DECLARE
@@ -19,16 +20,20 @@ BEGIN
               CURRENT_TIMESTAMP);
     END LOOP;
 END;
-$$ LANGUAGE plpgsql;
+$$
+  LANGUAGE plpgsql;
 
 -- Функция для триггера проверки низкого уровня запасов
-CREATE OR REPLACE FUNCTION trigger_check_low_inventory()
+CREATE
+  OR REPLACE FUNCTION trigger_check_low_inventory()
   RETURNS TRIGGER AS
 $$
 BEGIN
-  IF NEW.quantity < 10 THEN
+  IF
+    NEW.quantity < 10 THEN
     PERFORM check_low_inventory();
   END IF;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$
+  LANGUAGE plpgsql;
