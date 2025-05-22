@@ -4,53 +4,82 @@ set -euo pipefail
 INIT_FILE="init.sql"
 SCHEMA_DIR="schemas"
 
+ORDERED_TABLES=(
+    "warehouse"
+    "suppliers"
+    "business_plans"
+    "customers"
+    "categories"
+    "orders"
+    "settings"
+    "items"
+    "order_items"
+    "good"
+    "inventory_items"
+    "stock_transactions"
+    "profile"
+    "notifications"
+)
+
+ORDERED_SEEDS=(
+    "business_plans"
+    "categories"
+    "customers"
+    "items"
+    "orders"
+    "settings"
+    "suppliers"
+    "warehouse"
+    "good"
+    "order_items"
+    "profile"
+)
+
 SOURCES=(
     "enum.sql:ENUM ТИПЫ"
-    "table.sql:ОСНОВНЫЕ ТАБЛИЦЫ:exclude:good|inventory_items|order_items|orders|stock_transactions|profile|notifications"
-    "table.sql:ТАБЛИЦЫ С ЗАВИСИМОСТЯМИ:include:good|inventory_items|order_items|orders|stock_transactions|profile|notifications"
+    "ordered_tables:ТАБЛИЦЫ В ПОРЯДКЕ"
     "function.sql:ФУНКЦИИ"
     "trigger.sql:ТРИГГЕРЫ"
     "index.sql:ИНДЕКСЫ"
-    "seed.sql:НАЧАЛЬНЫЕ ДАННЫЕ"
+    "ordered_seeds:НАЧАЛЬНЫЕ ДАННЫЕ"
 )
 
-# Проверка входных данных
 [[ ! -d "$SCHEMA_DIR" ]] && { echo "❌ Ошибка: директория '$SCHEMA_DIR' не существует!"; exit 1; }
 touch "$INIT_FILE" || { echo "❌ Ошибка: нет прав на запись в '$INIT_FILE'!"; exit 1; }
 
 echo "🚀 Начинаю генерацию $INIT_FILE..."
 
 generate_section() {
-    local filename="$1" filter_type="$2" pattern="$3"
-    local find_cmd="find \"$SCHEMA_DIR\" -name \"$filename\" -type f"
-
+    local filename="$1"
+    local filter_type="$2"
+    local pattern="$3"
     echo "-- ===== $header ====="
 
-    if [[ "$filter_type" == "exclude" ]]; then
-        IFS='|' read -ra patterns <<< "$pattern"
-        for p in "${patterns[@]}"; do
-            find_cmd+=" -not -path \"*/$p/*\""
-        done
-        find_cmd+=" -exec cat {} \;"
-    elif [[ "$filter_type" == "include" ]]; then
-        IFS='|' read -ra patterns <<< "$pattern"
-        find_cmd+=" \( "
-        first=true
-        for p in "${patterns[@]}"; do
-            if [[ "$first" == true ]]; then
-                find_cmd+="-path \"*/$p/*\""
-                first=false
+    if [[ "$filename" == "ordered_tables" ]]; then
+        for table in "${ORDERED_TABLES[@]}"; do
+            file_path="$SCHEMA_DIR/$table/table.sql"
+            if [[ -f "$file_path" ]]; then
+                echo "-- $table"
+                cat "$file_path"
+                echo ""
             else
-                find_cmd+=" -o -path \"*/$p/*\""
+                echo "⚠️ Предупреждение: $file_path не найден"
             fi
         done
-        find_cmd+=" \) -exec cat {} \;"
+    elif [[ "$filename" == "ordered_seeds" ]]; then
+        for table in "${ORDERED_SEEDS[@]}"; do
+            seed_path="$SCHEMA_DIR/$table/seed.sql"
+            if [[ -f "$seed_path" ]]; then
+                echo "-- $table"
+                cat "$seed_path"
+                echo ""
+            else
+                echo "⚠️ Предупреждение: $seed_path не найден"
+            fi
+        done
     else
-        find_cmd+=" -exec cat {} \;"
+        find "$SCHEMA_DIR" -type f -name "$filename" -exec cat {} \; 2>/dev/null || echo "⚠️ Предупреждение: не найдено файлов $filename"
     fi
-
-    eval "$find_cmd" || echo "⚠️ Предупреждение: не найдено файлов для '$filename' с фильтром '$filter_type:$pattern'"
-    echo ""
 }
 
 {
@@ -61,7 +90,7 @@ generate_section() {
     echo ""
 
     for source in "${SOURCES[@]}"; do
-        IFS=':' read -r filename header filter_type pattern <<< "$source"
+        IFS=':' read -r filename header filter_type pattern <<< "$(echo "$source::::" | cut -d':' -f1-4)"
         generate_section "$filename" "$filter_type" "$pattern"
     done
 
