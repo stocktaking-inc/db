@@ -6,8 +6,8 @@ SCHEMA_DIR="schemas"
 
 SOURCES=(
     "enum.sql:ENUM ТИПЫ"
-    "table.sql:ОСНОВНЫЕ ТАБЛИЦЫ:exclude:good|inventory_items|items|order_items|orders|stock_transactions|profile|notifications"
-    "table.sql:ТАБЛИЦЫ С ЗАВИСИМОСТЯМИ:include:good|inventory_items|items|order_items|orders|stock_transactions|profile|notifications"
+    "table.sql:ОСНОВНЫЕ ТАБЛИЦЫ:exclude:good|inventory_items|order_items|orders|stock_transactions|profile|notifications"
+    "table.sql:ТАБЛИЦЫ С ЗАВИСИМОСТЯМИ:include:good|inventory_items|order_items|orders|stock_transactions|profile|notifications"
     "function.sql:ФУНКЦИИ"
     "trigger.sql:ТРИГГЕРЫ"
     "index.sql:ИНДЕКСЫ"
