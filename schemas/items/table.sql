@@ -6,5 +6,5 @@ CREATE TABLE items (
     quantity INTEGER NOT NULL DEFAULT 0,
     location INTEGER REFERENCES warehouse(id),
     status status_type DEFAULT 'Out of Stock',
-    supplier INTEGER REFERENCES suppliers(id)
+    supplier INTEGER REFERENCES suppliers(supplier_id)
 );
